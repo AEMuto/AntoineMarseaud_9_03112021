@@ -44,7 +44,7 @@ export const card = (bill) => {
         <span> ${bill.amount} € </span>
       </div>
       <div class='date-type-container'>
-        <span> ${formatDate(bill.date)} </span>
+        <span> ${bill.date ? formatDate(bill.date) : 'Date erronée'} </span>
         <span> ${bill.type} </span>
       </div>
     </div>
@@ -55,25 +55,14 @@ export const cards = (bills) => {
   return bills && bills.length ? bills.map(bill => card(bill)).join("") : ""
 }
 
-export const getStatus = (index) => {
-  switch (index) {
-    case 1:
-      return "pending"
-    case 2:
-      return "accepted"
-    case 3:
-      return "refused"
-  }
-}
-
 export default class {
   constructor({ document, onNavigate, firestore, bills, localStorage }) {
     this.document = document
     this.onNavigate = onNavigate
     this.firestore = firestore
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
-    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
-    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
+    $('#arrow-icon-pending').click((e) => this.handleShowTickets(e, bills, 'pending'))
+    $('#arrow-icon-accepted').click((e) => this.handleShowTickets(e, bills, 'accepted'))
+    $('#arrow-icon-refused').click((e) => this.handleShowTickets(e, bills, 'refused'))
     this.getBillsAllUsers()
     new Logout({ localStorage, onNavigate })
   }
@@ -86,24 +75,24 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
-    if (this.counter === undefined || this.id !== bill.id) this.counter = 0
-    if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (this.counter % 2 === 0) {
+    const target = e.currentTarget
+
+    if (!target.classList.contains('open')) {
       bills.forEach(b => {
-        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }).removeClass('open')
       })
+      target.classList.add('open')
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
-      $('.vertical-navbar').css({ height: '150vh' })
-      this.counter ++
+
     } else {
+      target.classList.remove('open')
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
       $('.dashboard-right-container div').html(`
         <div id="big-billed-icon"> ${BigBilledIcon} </div>
       `)
-      $('.vertical-navbar').css({ height: '120vh' })
-      this.counter ++
+
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
@@ -130,27 +119,24 @@ export default class {
     this.onNavigate(ROUTES_PATH['Dashboard'])
   }
 
-  handleShowTickets(e, bills, index) {
-    if (this.counter === undefined || this.index !== index) this.counter = 0
-    if (this.index === undefined || this.index !== index) this.index = index
-    if (this.counter % 2 === 0) {
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
-      $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))))
-      this.counter ++
+  handleShowTickets(e, bills, category) {
+    const target = e.currentTarget
+    const billsByCategory = filteredBills(bills, category)
+
+    if (!target.classList.contains('open')) {
+      target.classList.add('open')
+      $(`#arrow-icon-${category}`).css({ transform: 'rotate(0deg)'})
+      $(`#status-bills-container-${category}`)
+        .html(cards(billsByCategory))
+      billsByCategory.forEach(bill => {
+        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      })
     } else {
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
-      $(`#status-bills-container${this.index}`)
+      target.classList.remove('open')
+      $(`#arrow-icon-${category}`).css({ transform: 'rotate(90deg)'})
+      $(`#status-bills-container-${category}`)
         .html("")
-      this.counter ++
     }
-
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
-
-    return bills
-
   }
 
   // not need to cover this function by tests

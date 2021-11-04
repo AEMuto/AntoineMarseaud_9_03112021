@@ -20,23 +20,23 @@ export default ({ data, loading, error }) => {
         <div class='bills-feed'>
           <div class='status-bills-header'>
             <h3> En attente (${filteredBills(data && data.bills, "pending").length}) </h3>
-            <span class='arrow-icon' id='arrow-icon1' data-testid='arrow-icon1'>${ArrowIcon}</span>
+            <span class='arrow-icon' id='arrow-icon-pending' data-testid='arrow-icon-pending'>${ArrowIcon}</span>
           </div>
-          <div class='status-bills-container' id='status-bills-container1'>
+          <div class='status-bills-container' id='status-bills-container-pending'>
           </div>
           
             <div class='status-bills-header' style='margin-top: 20px;'>
               <h3> Validé (${filteredBills(data && data.bills, "accepted").length}) </h3>
-              <span class='arrow-icon' id='arrow-icon2' data-testid='arrow-icon2'>${ArrowIcon}</span>
+              <span class='arrow-icon' id='arrow-icon-accepted' data-testid='arrow-icon-accepted'>${ArrowIcon}</span>
             </div>
-            <div class='status-bills-container' id='status-bills-container2'>
+            <div class='status-bills-container' id='status-bills-container-accepted'>
             </div>
 
             <div class='status-bills-header' style='margin-top: 20px;'>
               <h3> Refusé (${filteredBills(data && data.bills, "refused").length}) </h3>
-              <span class='arrow-icon' id='arrow-icon3' data-testid='arrow-icon3'>${ArrowIcon}</span>
+              <span class='arrow-icon' id='arrow-icon-refused' data-testid='arrow-icon-refused'>${ArrowIcon}</span>
             </div>
-            <div class='status-bills-container' id='status-bills-container3'>
+            <div class='status-bills-container' id='status-bills-container-refused'>
             </div>
 
         </div>
