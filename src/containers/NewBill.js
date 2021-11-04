@@ -16,9 +16,19 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const fileInput = this.document.querySelector(`input[data-testid="file"]`)
+    const file = fileInput.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
+    // Vérifier que l'extension de fichier est valide
+    const correctFileExtension = fileName.match(/.jpg|.jpeg|.png$/)
+    if (!correctFileExtension) { // Si invalide vider l'input et afficher un message d'erreur
+      fileInput.value = ''
+      fileInput.insertAdjacentHTML('afterend', '<p class="error">Veuillez choisir un type de fichier autorisé :<br>.png, .jpg ou .jpeg</p>')
+      return
+    }
+    const error = this.document.querySelector('.error') // Le fichier est valide, supprimer erreur si présente
+    error ? error.parentElement.removeChild(error) : ''
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
