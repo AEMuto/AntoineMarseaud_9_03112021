@@ -16,6 +16,7 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
+    //console.log(e.target.value)
     const fileInput = this.document.querySelector(`input[data-testid="file"]`)
     const file = fileInput.files[0]
     const filePath = e.target.value.split(/\\/g)
@@ -24,7 +25,7 @@ export default class NewBill {
     const correctFileExtension = fileName.match(/.jpg|.jpeg|.png$/)
     if (!correctFileExtension) { // Si invalide vider l'input et afficher un message d'erreur
       fileInput.value = ''
-      fileInput.insertAdjacentHTML('afterend', '<p class="error">Veuillez choisir un type de fichier autorisé :<br>.png, .jpg ou .jpeg</p>')
+      fileInput.insertAdjacentHTML('afterend', '<p class="error" data-testid="error">Veuillez choisir un type de fichier autorisé :<br>.png, .jpg ou .jpeg</p>')
       return
     }
     const error = this.document.querySelector('.error') // Le fichier est valide, supprimer erreur si présente
@@ -41,7 +42,6 @@ export default class NewBill {
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
@@ -61,6 +61,7 @@ export default class NewBill {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   createBill = (bill) => {
     if (this.firestore) {
       this.firestore
