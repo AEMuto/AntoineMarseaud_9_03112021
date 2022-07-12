@@ -1,7 +1,9 @@
 {
   "scripts": {
     "test": "jest --coverage --noStackTrace --silent",
-    "start": "live-server"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
   "jest": {
     "verbose": false,
@@ -19,9 +21,7 @@
   },
   "type": "module",
   "dependencies": {
-    "express": "^4.17.1",
     "jquery": "^3.5.1",
-    "live-server": "^1.2.2",
     "path": "^0.12.7"
   },
   "devDependencies": {
@@ -31,6 +31,7 @@
     "@testing-library/user-event": "^12.0.11",
     "babel-jest": "^26.1.0",
     "jest": "^26.1.0",
-    "jest-html-reporter": "^3.1.3"
+    "jest-html-reporter": "^3.1.3",
+    "vite": "^2.9.14"
   }
 }
